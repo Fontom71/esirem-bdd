@@ -1,0 +1,135 @@
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #dddddd;
+    margin: 0;
+}
+
+/* Entête */
+.header {
+    background-color: #eeeeee;
+    box-shadow: 0 0 10px #000;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    align-items: center;
+    position: relative;
+}
+
+.logo {
+    width: 200px;
+}
+
+.navbar ul {
+    display: flex;
+    list-style-type: none;
+}
+
+.navbar li {
+    margin-right: 20px;
+}
+
+.navbar li a {
+    color: #4691ff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+section {
+    background-color: white;
+    padding: 20px;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+/* Section Présentation */
+.presentation h2 {
+    color: #4691ff;
+    border-bottom: #4691ff 1px solid;
+    margin-bottom: 10px;
+}
+
+.presentation p {
+    text-align: justify;
+}
+
+.video-container {
+    margin-top: 10px;
+    width: 500px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Section Actualités */
+.actualites h2 {
+margin-bottom: 30px;
+}
+
+.list-actualites {
+    display: flex;
+    justify-content: space-around;
+}
+
+.actualite {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    text-align: justify;
+    margin-bottom: 20px;
+}
+
+.actualites h2 {
+    color: #4691ff;
+    border-bottom: #4691ff 1px solid;
+}
+
+.actualite h3 {
+    color: #555;
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+.actualite img {
+    width: 200px;
+    border-radius: 10px;
+}
+
+.actualite p {
+    padding-top: 10px;
+    font-size: 0.7em;
+}
+
+/* Pied de page */
+.footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Media Queries */
+@media screen and (max-width: 900px) {
+
+    /* Section Actualités en colonnes */
+    .list-actualites {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Liens de l'entête plus petits */
+    .navbar li a {
+        font-size: 0.8em;
+    }
+
+    /* Titres principaux centrés */
+    h1,
+    h2,
+    h3 {
+        text-align: center;
+    }
+
+    /* Vidéo en largeur 90% */
+    .video-container {
+        width: 90%;
+    }
+}
