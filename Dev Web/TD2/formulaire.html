@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test</title>
+</head>
+
+<body>
+    <input type="text" id="txt-valeur">
+    <button id="btn-tester">Tester</button>
+
+    <script>
+        const txtValeur = document.querySelector("#txt-valeur");
+
+        function testValue() {
+            const valeur = txtValeur.value;
+            if (isNaN(valeur)) {
+                txtValeur.style.backgroundColor = "red";
+            } else if (valeur % 2 === 0) {
+                txtValeur.style.backgroundColor = "yellow";
+            } else {
+                txtValeur.style.backgroundColor = "blue";
+            }
+        }
+
+        const btnTester = document.querySelector("#btn-tester");
+        btnTester.addEventListener("click", testValue);
+    </script>
+</body>
+
+</html>

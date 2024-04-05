@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test</title>
+</head>
+
+<body>
+    <input type="text" id="txt-valeur">
+    <select id="select-list"></select>
+    <button id="btn-ajouter">Ajouter</button>
+    <button id="btn-supprimer">Supprimer</button>
+
+    <script>
+        const txtValeur = document.querySelector("#txt-valeur");
+        const selectList = document.querySelector("#select-list");
+        const btnAjouter = document.querySelector("#btn-ajouter");
+        const btnSupprimer = document.querySelector("#btn-supprimer");
+
+        btnAjouter.addEventListener("click", function () {
+            const nouvelleOption = document.createElement("option");
+            nouvelleOption.text = txtValeur.value;
+            selectList.add(nouvelleOption);
+            txtValeur.value = "";
+        });
+
+        btnSupprimer.addEventListener("click", function () {
+            selectList.remove(selectList.selectedIndex);
+        });
+    </script>
+</body>
+
+</html>
