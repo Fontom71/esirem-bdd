@@ -23,8 +23,12 @@
             }
         }
 
-        const btnTester = document.querySelector("#btn-tester");
-        btnTester.addEventListener("click", testValue);
+        function connectClickEvent() {
+            const btnTester = document.querySelector("#btn-tester");
+            btnTester.addEventListener("click", testValue);
+        }
+
+        connectClickEvent();
     </script>
 </body>
 

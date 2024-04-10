@@ -7,9 +7,9 @@ area = width * height;
 console.log(area); // Affiche 2073600
 
 try {
-  height = 1200; // Erreur ici
+  height = 1200;
 } catch (error) {
-  console.error("Erreur : " + error); // Affiche "Erreur : TypeError: Assignment to constant variable."
+  console.error("Erreur : " + error);
 }
 
 const array = [];
