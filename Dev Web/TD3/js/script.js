@@ -1,9 +1,6 @@
-// Créez une fonction « generateFields » qui créera 25 éléments :
 function generateFields() {
-  // Sélectionner la balise "field-parts" déjà présente dans le document HTML
   const fieldParts = document.querySelector("field-parts");
 
-  // Boucle pour créer 25 éléments "field-part" avec la classe CSS "grass"
   for (let i = 0; i < 25; i++) {
     // Créer un nouvel élément avec la balise personnalisée "field-part"
     const fieldPart = document.createElement("field-part");
@@ -14,7 +11,6 @@ function generateFields() {
   }
 }
 
-// Appelez la fonction « generateFields » lorsque la page a terminé son chargement.
 window.addEventListener("load", generateFields);
 
 // Créez une fonction « attachToolsEvent » qui ajoutera un gestionnaire d'événement "click" à chaque outil.
@@ -69,16 +65,17 @@ function grow() {
   const fieldParts = document.querySelectorAll(".farmland[data-seed]");
   const hydratedFields = document.querySelectorAll(".farmland.hydrated");
 
-  // Pour chaque champ de blé
   fieldParts.forEach((field) => {
     let seedValue = parseInt(field.dataset.seed);
     // Calculer la probabilité de croissance en fonction de l'arrosage
-    let growthProbability = hydratedFields.includes(field) ? 0.3 : 0.05;
+    let growthProbability = Array.from(hydratedFields).includes(field) ? 0.3 : 0.05;
     // Générer un nombre aléatoire entre 0 et 1
-    let random = Math.random();
+    const min = 0;
+    const max = 1;
+    let random = (Math.random() * (max- min)) + min;
     // Vérifier si la croissance se produit en fonction de la probabilité
     if (random < growthProbability) {
-      if (seedValue < 7) {
+      if (seedValue > 0 && seedValue < 7) {
         seedValue++;
         field.dataset.seed = seedValue;
       }
@@ -96,7 +93,9 @@ function grow() {
   // Probabilité qu'un champ sec sans graine redevienne de l'herbe
   const dryFields = document.querySelectorAll(".farmland:not([data-seed])");
   dryFields.forEach((field) => {
-    let random = Math.random();
+    const min = 0;
+    const max = 1;
+    let random = (Math.random() * (max- min)) + min;
     // Si la probabilité est de 1% ou moins, redevient de l'herbe
     if (random <= 0.01) {
       field.classList.remove("farmland");
