@@ -35,9 +35,16 @@ export class ControllerMemory extends Notifier {
   }
 
   showCard(index) {
-    this.#memory.showCard(index);
+    const win = this.#memory.showCard(index);
     this.saveGame();
     this.notify();
+    setTimeout(() => {
+      this.saveGame();
+      this.notify();
+      if (win) {
+        this.newGame();
+      }
+    }, 1000);
   }
 
   start() {

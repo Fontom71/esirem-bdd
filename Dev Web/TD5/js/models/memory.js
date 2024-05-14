@@ -14,7 +14,8 @@ class Memory {
     for (let i = 0; i < pairsNumber; i++) {
       const cardValue = new Card(0x1f90c + i);
       this.#cards.push(cardValue);
-      this.#cards.push(cardValue);
+      const cardValue2 = new Card(0x1f90c + i);
+      this.#cards.push(cardValue2);
     }
 
     for (let i = this.#cards.length - 1; i > 0; i--) {
@@ -34,10 +35,10 @@ class Memory {
   showCard(index) {
     const card = this.#cards[index];
     if (card.faceHidden) {
+      card.show();
       if (this.#firstCardIndex === null) {
         // Si c'est la première carte à être retournée
         this.#firstCardIndex = index;
-        card.show();
       } else {
         // Si c'est la deuxième carte à être retournée
         const firstCard = this.#cards[this.#firstCardIndex];
@@ -54,6 +55,16 @@ class Memory {
         this.#firstCardIndex = null;
       }
     }
+
+    // Vérifier si toutes les cartes ont été retournées
+    let allCardsFound = true;
+    this.#cards.forEach((card) => {
+      if (card.faceHidden) {
+        allCardsFound = false;
+      }
+    });
+
+    if (allCardsFound) return true;
   }
 
   toData() {
