@@ -1,81 +1,197 @@
-# Compte rendu : TD JavaScript - Classes & MVC
-
-## Introduction
-
-Dans le cadre du TD JavaScript sur les Classes & MVC, nous avons exploré plusieurs concepts clés de la programmation web moderne, notamment l'utilisation des modules ES6, les classes en JavaScript, le patron de conception Sujet/Observateur, ainsi que l'architecture Modèle/Vue/Contrôleur (MVC). Ce compte rendu présente un résumé des étapes suivies et des concepts abordés au cours de ce TD.
+# Compte Rendu : TD JavaScript - Classes & MVC
 
 ## Modules ES6
 
-### Ancienne méthode
+### À l'Ancienne
 
-- Création d'un dossier "models" et d'un fichier "counter.js".
-- Déclaration d'une variable globale "counter" initialisée à 0.
-- Création d'un dossier "application" et d'un fichier "application.js".
-- Affichage du contenu de "counter" dans la console une fois la page chargée.
-- Ajout des scripts "counter.js" et "application.js" au fichier "index.html".
-- Test du bon fonctionnement.
+- Création d'une variable globale `counter` initialisée à 0 dans `counter.js` :
+  ```javascript
+  let counter = 0;
+  ```
+- Affichage du contenu de `counter` dans `application.js` :
+  ```javascript
+  console.log(counter);
+  ```
 
-### Utilisation des modules
+### Avec les Modules
 
-- Retrait du script "counter.js" du fichier "index.html".
-- Modification de la balise script associée à "application.js" pour indiquer qu'il s'agit d'un module.
-- Importation de "counter" dans "application.js".
-- Modification de la déclaration de "counter" pour permettre l'exportation.
-- Test du bon fonctionnement.
+- Modification de `index.html` pour indiquer que `application.js` est un module :
+  ```html
+  <script src="js/application/application.js" type="module"></script>
+  ```
+- Ajout de l'import de `counter` dans `application.js` :
+  ```javascript
+  import { counter } from "./../models/counter.js";
+  ```
+- Modification de `counter.js` pour permettre l'exportation de `counter` :
+  ```javascript
+  export let counter = 0;
+  ```
 
-### Amélioration avec l'élimination des variables globales
+### Un Peu Mieux
 
-- Création d'une fonction "getCounter" dans "counter.js" pour retourner la valeur de "counter".
-- Exportation de cette fonction.
-- Suppression du mot clé "export" devant la déclaration de "counter".
-- Test et explication du résultat obtenu.
-- Correction du problème.
+- Création d'une fonction `getCounter` dans `counter.js` :
+  ```javascript
+  export function getCounter() {
+      return counter;
+  }
+  ```
 
-## Première classe
+## Première Classe
 
-- Introduction à la syntaxe de déclaration d'une classe en JavaScript.
-- Remplacement du code de "counter.js" par une classe.
-- Adaptation du code de "application.js".
-- Test du bon fonctionnement.
+- Création de la classe `Counter` dans `counter.js` :
+  ```javascript
+  class Counter {
+    #value;
+    get value() {
+      return this.#value;
+    }
 
-## Getter et Setter
+    constructor() {
+      this.#value = 0;
+    }
 
-- Remplacement de la méthode "getValue" par un getter dans la classe "Counter".
-- Adaptation du reste du code.
-- Test du bon fonctionnement.
+    incrementValue() {
+      this.#value++;
+    }
 
-## Patron Sujet/Observateur
+    decrementValue() {
+      this.#value--;
+    }
+  }
 
-- Création d'un dossier "pattern" et des fichiers "observer.js" et "notifier.js".
-- Implémentation de l'interface "Observer".
-- Implémentation de la classe "Notifier".
-- Exportation des classes pour leur utilisation dans d'autres modules.
+  export default Counter;
+  ```
+- Adaptation de `application.js` pour utiliser cette classe :
+  ```javascript
+  import { Counter } from "./../models/counter.js";
 
-## Modèle / Vue / Contrôleur (MVC)
+  const counter = new Counter();
+  console.log(counter.counter);
+  ```
+
+## Sujet/Observateur
+
+- Implémentation de l'interface `Observer` dans `observer.js` :
+  ```javascript
+  class Observer {
+    notify() {
+      throw new Error("La méthode notify doit être implémentée");
+    }
+  }
+
+  export default Observer;
+  ```
+- Création de la classe `Notifier` dans `notifier.js` :
+  ```javascript
+  class Notifier {
+    #observers;
+
+    constructor() {
+      this.#observers = [];
+    }
+
+    addObserver(observer) {
+      this.#observers.push(observer);
+    }
+
+    notify() {
+      this.#observers.forEach((observer) => observer.notify());
+    }
+  }
+
+  export default Notifier;
+  ```
+
+## Modèle / Vue / Contrôleur
 
 ### Modèle
 
-- Définition du modèle avec la classe "Counter".
+- La classe `Counter` représente le modèle et contient la logique métier de l'application.
 
 ### Contrôleur
 
-- Création d'un dossier "controllers" et du fichier "controller.js".
-- Implémentation de la classe "Controller" qui hérite de "Notifier".
+- Création de la classe `Controller` dans `controller.js` :
+  ```javascript
+  import Counter from "../models/counter.js";
+  import Notifier from "../pattern/notifier.js";
+
+  class Controller extends Notifier {
+    #counter;
+
+    constructor() {
+      super();
+      this.#counter = new Counter();
+    }
+
+    incrementCounter() {
+      this.#counter.incrementValue();
+      this.notify();
+    }
+
+    decrementCounter() {
+      this.#counter.decrementValue();
+      this.notify();
+    }
+
+    getCounterValue() {
+      return this.#counter.value;
+    }
+  }
+
+  export default Controller;
+  ```
 
 ### Vue
 
-- Création d'un dossier "views" et du fichier "view.js".
-- Implémentation de la classe "View" qui implémente l'interface "Observer".
-- Ajout d'un gestionnaire d'événements "click" sur le bouton "Incrémenter".
-- Affichage de la valeur du compteur dans le paragraphe "txt-counter".
-- Création d'une instance de "Controller" et de "View" dans "application.js".
-- Test du bon fonctionnement.
+- Création de la classe `View` dans `view.js` :
+  ```javascript
+  import Observer from "../pattern/observer.js";
 
-### Gestion de l'interaction utilisateur
+  class View extends Observer {
+    #controller;
 
-- Ajout d'un gestionnaire d'événements "click" sur le bouton "Décrémenter".
-- Test du bon fonctionnement.
+    constructor(controller) {
+      super();
+      this.#controller = controller;
+      this.#controller.addObserver(this);
+
+      document
+      .getElementById("btn-increment")
+      .addEventListener("click", () => {
+        controller.incrementCounter();
+      });
+
+      document
+      .getElementById("btn-decrement")
+      .addEventListener("click", () => {
+        controller.decrementCounter();
+      });
+    }
+
+    notify() {
+      // affiche la valeur du compteur dans txt-counter
+      document.getElementById("txt-counter").textContent =
+        this.#controller.getCounterValue();
+    }
+  }
+
+  export default View;
+  ```
+
+### Application
+
+- Modification de `application.js` pour créer un `Controller` et une `View` :
+  ```javascript
+  import { Controller } from './controllers/controller.js';
+  import { View } from './views/view.js';
+
+  window.addEventListener('DOMContentLoaded', () => {
+      const controller = new Controller();
+      new View(controller);
+  });
+  ```
 
 ## Conclusion
 
-Ce TD nous a permis de comprendre les concepts fondamentaux de la programmation web, en mettant l'accent sur l'organisation du code à l'aide des modules ES6, des classes et du patron de conception MVC. Nous avons également appris à éviter les variables globales et à mettre en place une architecture robuste pour nos applications web
+Ce TD m'a permis de comprendre comment structurer une application JavaScript en utilisant les modules ES6, les classes, et le modèle MVC avec le patron Sujet/Observateur pour une architecture propre et maintenable.

@@ -1,80 +1,313 @@
-# Compte rendu : JavaScript - POO & LocalStorage
+# Compte Rendu : TD JavaScript - POO & LocalStorage
 
-## Introduction
-Dans ce TD sur JavaScript axé sur la programmation orientée objet (POO) et l'utilisation de l'API Web LocalStorage, nous avons réalisé un jeu Memory. L'objectif était de manipuler les modules ES6, de comprendre les concepts de la POO, d'implémenter l'architecture Modèle/Vue/Contrôleur (MVC), et de sauvegarder l'état du jeu dans le navigateur grâce au LocalStorage. Ce compte rendu résume les étapes suivies et les concepts abordés tout au long de l'exercice.
+## Implémentation
 
-## Une carte
-### Modèle
-- Implémentation de la classe Card avec un attribut "value" et un getter.
-### Contrôleur
-- Ajout d'un attribut "card" à la classe ControllerMemory avec un getter.
-- Création de la méthode "createCard" pour initialiser "card" avec une instance de Card.
-### Vue
-- Ajout de la méthode "displayCard" à la classe ViewMemory pour afficher une carte avec un caractère spécial HTML correspondant à sa valeur.
+### Une Carte
 
-## Application
-- Appel de la méthode "createCard" dans le constructeur de ApplicationMemory.
+#### Modèle
 
-## Test
-- Lancement du serveur local pour vérifier l'apparition d'une carte à l'écran.
+- Création de la classe `Card` avec un attribut `value` disposant d'un getter dans `js/models/card.js` :
+  ```javascript
+  export class Card {
+      #value;
+      constructor(value) {
+          this.#value = value;
+      }
+      get value() {
+          return this.#value;
+      }
+  }
+  ```
 
-## Des cartes
-- Modification pour générer une nouvelle carte à chaque clic sur la carte affichée.
+#### Contrôleur
 
-## Memory
-### Modèle
-- Implémentation de la classe Memory avec des méthodes pour gérer les cartes du jeu.
-### Contrôleur
-- Suppression de "card" et "createCard".
-- Ajout de "memory" initialisé avec une nouvelle instance de Memory et d'une méthode "newGame".
+- Ajout d'un attribut `card` de type `Card` avec un getter dans `js/controllers/controller-memory.js` :
+  ```javascript
+  import { Card } from './../models/card.js';
+  import { Notifier } from "../patterns/notifier.js";
 
-### Vue
-- Modification de "displayCard" pour afficher les cartes passées en paramètre.
-- Ajout de "displayCards" pour afficher toutes les cartes du Memory.
+  export class ControllerMemory extends Notifier {
+      #card;
+      constructor() {
+          super();
+      }
+      get card() {
+          return this.#card;
+      }
+      createCard() {
+          const randomValue = Math.floor(Math.random() * (0x1F9FF - 0x1F90C + 1)) + 0x1F90C;
+          this.#card = new Card(randomValue);
+          this.notify();
+      }
+  }
+  ```
 
-## Application
-- Modification du constructeur pour appeler "newGame".
+#### Vue
 
-## Un peu aléatoire
-- Modification pour que les cartes soient générées dans un ordre aléatoire.
+- Ajout de la méthode `displayCard` dans `js/views/view-memory.js` :
+  ```javascript
+  import { Observer } from "../patterns/observer.js";
 
-## Enregistrement
-### Contrôleur
-- Ajout de la méthode "saveGame" pour enregistrer l'état du jeu dans le LocalStorage.
+  export class ViewMemory extends Observer {
+      #controllerMemory;
 
-### Test
-- Vérification de l'enregistrement des données au format JSON.
+      constructor(controllerMemory) {
+          super();
 
-## Chargement
-### Memory
-- Ajout de la méthode "fromData" pour charger les données d'un Memory depuis un objet JavaScript.
+          this.#controllerMemory = controllerMemory;
+          this.#controllerMemory.addObserver(this);
+      }
+      displayCard(card) {
+          const cardElement = document.createElement('div');
+          cardElement.classList.add("card");
+          const specialChar = String.fromCodePoint(card.value);
+          cardElement.innerHTML = `<p>${specialChar}</p>`;
+          const cards = document.getElementsByClassName("cards")[0];
+          cards.appendChild(cardElement);
+      }
+      notify() {
+          this.displayCard(this.#controllerMemory.card);
+      }
+  }
+  ```
 
-### Contrôleur
-- Ajout de la méthode "loadGame" pour charger les données enregistrées.
+#### Application
 
-### Application
-- Modification pour appeler "start" au lieu de "newGame".
+- Appel de la méthode `createCard` dans le constructeur de `ApplicationMemory` :
+  ```javascript
+  import { ControllerMemory } from './controllers/controller-memory.js';
+  import { ViewMemory } from './views/view-memory.js';
 
-### Test
-- Vérification que les données sont chargées correctement au démarrage de l'application.
+  export class ApplicationMemory {
+      #controllerMemory;
+      #viewMemory;
 
-## SessionStorage
-- Remplacement de LocalStorage par SessionStorage pour tester les différences.
+      constructor() {
+          this.#initControllers();
+          this.#initViews();
+          this.#controllerMemory.createCard();
+      }
+      #initControllers() {
+          this.#controllerMemory = new ControllerMemory();
+      }
 
-## Bonus du développeur
-### Carte
-- Ajout de l'attribut "faceHidden" et des méthodes "show" et "hide" pour gérer l'affichage des cartes.
+      #initViews() {
+          this.#viewMemory = new ViewMemory(this.#controllerMemory);
+      }
+  }
+  ```
 
-### Memory
-- Ajout de la méthode "showCard" pour gérer le retournement des cartes pendant le jeu.
+### Des Cartes
 
-### Contrôleur
-- Ajout de la méthode "showCard" pour interagir avec Memory lors du retournement d'une carte.
+#### Modèle
 
-### Vue
-- Modification pour appeler "showCard" lors du clic sur une carte.
+- Création de la classe `Memory` dans `js/models/memory.js` :
+  ```javascript
+  export class Memory {
+      #cards;
+      constructor() {
+          this.#cards = [];
+      }
+      newGame(pairsNumber) {
+          this.#cards = [];
+          for (let i = 0; i < pairsNumber; i++) {
+              const value = 0x1F90C + i;
+              this.#cards.push(new Card(value), new Card(value));
+          }
+          this.#cards = this.#cards.sort(() => Math.random() - 0.5);
+      }
+      getCardsNumber() {
+          return this.#cards.length;
+      }
+      getCard(index) {
+          return this.#cards[index];
+      }
+  }
+  ```
 
-## Bonus du pro du CSS
-- Animation du retournement des cartes avec l'attribut CSS "transform".
+#### Contrôleur
 
-Ce TD nous a permis de comprendre et de mettre en pratique de nombreux concepts avancés de JavaScript, notamment la POO et l'utilisation de l'API Web Storage pour sauvegarder les données localement dans le navigateur.
+- Mise à jour de `ControllerMemory` :
+  ```javascript
+  import { Memory } from './../models/memory.js';
+  import { Notifier } from "../patterns/notifier.js";
+
+  export class ControllerMemory extends Notifier {
+      #memory;
+      constructor() {
+          super();
+          this.#memory = new Memory();
+      }
+      get memory() {
+          return this.#memory;
+      }
+      newGame() {
+          this.#memory.newGame(10);
+          this.notify();
+      }
+  }
+  ```
+
+#### Vue
+
+- Mise à jour de `ViewMemory` :
+  ```javascript
+  import { Observer } from "../patterns/observer.js";
+
+  export class ViewMemory extends Observer {
+      #controllerMemory;
+
+      constructor(controllerMemory) {
+          super();
+
+          this.#controllerMemory = controllerMemory;
+          this.#controllerMemory.addObserver(this);
+      }
+      displayCard(card) {
+          const cardElement = document.createElement('div');
+          cardElement.classList.add("card");
+          const specialChar = String.fromCodePoint(card.value);
+          cardElement.innerHTML = `<p>${specialChar}</p>`;
+          const cards = document.getElementsByClassName("cards")[0];
+          cards.appendChild(cardElement);
+      }
+      displayCards(cards) {
+          const cardsContainer = document.getElementsByClassName("cards")[0];
+          cardsContainer.innerHTML = "";
+
+          for (let i = 0; i < cards.getCardsNumber(); i++) {
+              this.displayCard(cards.getCard(i));
+          }
+      }
+      notify() {
+          const cards = this.#controllerMemory.memory;
+          this.displayCards(cards);
+      }
+  }
+  ```
+
+#### Application
+
+- Mise à jour du constructeur de `ApplicationMemory` :
+  ```javascript
+  import { ControllerMemory } from './controllers/controller-memory.js';
+  import { ViewMemory } from './views/view-memory.js';
+
+  export class ApplicationMemory {
+      #controllerMemory;
+      #viewMemory;
+
+      constructor() {
+          this.#initControllers();
+          this.#initViews();
+          this.#controllerMemory.newGame();
+      }
+      #initControllers() {
+          this.#controllerMemory = new ControllerMemory();
+      }
+
+      #initViews() {
+          this.#viewMemory = new ViewMemory(this.#controllerMemory);
+      }
+  }
+  ```
+
+### Enregistrement
+
+#### Contrôleur
+
+- Ajout de la méthode `saveGame` dans `ControllerMemory` :
+  ```javascript
+  saveGame() {
+      const memoryData = JSON.stringify(this.#memory.toData());
+      localStorage.setItem('memory', memoryData);
+  }
+  ```
+
+#### Méthodes toData et fromData
+
+##### Card
+
+- Ajout de la méthode `toData` :
+  ```javascript
+  toData() {
+      return { value: this.#value };
+  }
+  ```
+
+##### Memory
+
+- Ajout de la méthode `toData` :
+
+  ```javascript
+  toData() {
+      return { cards: this.#cards.map(card => card.toData()) };
+  }
+  ```
+- Ajout de la méthode `fromData` :
+
+  ```javascript
+  fromData(data) {
+      this.#cards = [];
+      data.cards.forEach((cardData) => {
+          const card = new Card(cardData.value);
+          cardData.faceHidden ? card.hide() : card.show();
+          this.#cards.push(card);
+      });
+  }
+  ```
+
+#### Contrôleur
+
+- Mise à jour de `saveGame` et ajout de `loadGame` :
+  ```javascript
+  saveGame() {
+      const memoryData = JSON.stringify(this.#memory.toData());
+      localStorage.setItem('memoryGame', memoryData);
+  }
+  loadGame() {
+      const memoryData = JSON.parse(sessionStorage.getItem("memory"));
+      if (memoryData) {
+          this.memory.fromData(memoryData);
+          this.notify();
+          return true;
+      } else {
+          return false;
+      }
+  }
+  start() {
+      if (!this.loadGame()) {
+          this.newGame();
+      }
+  }
+  ```
+
+#### Application
+
+- Mise à jour de `ApplicationMemory` :
+  ```javascript
+  import { ControllerMemory } from './controllers/controller-memory.js';
+  import { ViewMemory } from './views/view-memory.js';
+
+  export class ApplicationMemory {
+      #controllerMemory;
+      #viewMemory;
+
+      constructor() {
+          this.#initControllers();
+          this.#initViews();
+          this.#controllerMemory.start();
+      }
+      #initControllers() {
+          this.#controllerMemory = new ControllerMemory();
+      }
+
+      #initViews() {
+          this.#viewMemory = new ViewMemory(this.#controllerMemory);
+      }
+  }
+  ```
+
+## Conclusion
+
+Ce TD m'a permis de comprendre comment structurer une application JavaScript en utilisant les modules ES6, les classes, le modèle MVC, et le LocalStorage pour une architecture propre et maintenable.
