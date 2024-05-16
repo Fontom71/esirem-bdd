@@ -20,7 +20,8 @@ export class ControllerMemory extends Notifier {
   }
 
   saveGame() {
-    sessionStorage.setItem("memory", JSON.stringify(this.#memory.toData()));
+    const memoryData = JSON.stringify(this.#memory.toData());
+    sessionStorage.setItem("memory", memoryData);
   }
 
   loadGame() {

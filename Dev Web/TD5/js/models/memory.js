@@ -12,16 +12,11 @@ class Memory {
   newGame(pairsNumber) {
     this.#cards = [];
     for (let i = 0; i < pairsNumber; i++) {
-      const cardValue = new Card(0x1f90c + i);
-      this.#cards.push(cardValue);
-      const cardValue2 = new Card(0x1f90c + i);
-      this.#cards.push(cardValue2);
+      const value = 0x1f90c + i;
+      this.#cards.push(new Card(value), new Card(value));
     }
 
-    for (let i = this.#cards.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [this.#cards[i], this.#cards[j]] = [this.#cards[j], this.#cards[i]];
-    }
+    this.#cards = this.#cards.sort(() => Math.random() - 0.5);
   }
 
   getCardsNumber() {
