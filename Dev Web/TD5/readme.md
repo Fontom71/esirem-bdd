@@ -97,6 +97,8 @@
   }
   ```
 
+Dans cette partie, nous avons créé une classe `Card` dans `js/models/card.js`. Cette classe représente une carte de jeu avec un attribut `value` pour stocker la valeur de la carte. Nous avons également créé un contrôleur `ControllerMemory` dans `js/controllers/controller-memory.js` pour gérer la création de cartes. Le contrôleur génère une carte avec une valeur Unicode aléatoire et utilise un modèle d'observateur pour notifier les vues lorsque la carte est créée. La vue `ViewMemory` dans `js/views/view-memory.js` est mise à jour pour afficher la carte créée.
+
 ### Des Cartes
 
 #### Modèle
@@ -212,6 +214,8 @@
   }
   ```
 
+Nous avons étendu notre modèle avec une classe `Memory` dans `js/models/memory.js`. Cette classe représente le jeu de mémoire avec une liste de cartes. Le contrôleur `ControllerMemory` est mis à jour pour créer un jeu de mémoire avec un nombre spécifié de paires de cartes. La vue `ViewMemory` est également mise à jour pour afficher toutes les cartes du jeu.
+
 ### Enregistrement
 
 #### Contrôleur
@@ -307,6 +311,8 @@
       }
   }
   ```
+
+Nous avons ajouté la fonctionnalité d'enregistrement du jeu dans le `LocalStorage`. Le contrôleur `ControllerMemory` est étendu avec des méthodes pour sauvegarder et charger l'état du jeu à partir du `LocalStorage`. Nous avons également ajouté des méthodes `toData` et `fromData` aux classes `Card` et `Memory` pour sérialiser et désérialiser leurs données.
 
 ## Conclusion
 

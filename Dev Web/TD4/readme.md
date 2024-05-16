@@ -37,6 +37,8 @@
   }
   ```
 
+Dans cette section, j'ai d'abord appris comment organiser mon code en utilisant des modules ES6. Cela me permet de diviser mon application en plusieurs fichiers pour une meilleure organisation et maintenabilité.
+
 ## Première Classe
 
 - Création de la classe `Counter` dans `counter.js` :
@@ -70,6 +72,8 @@
   console.log(counter.counter);
   ```
 
+J'ai créé la classe `Counter` dans counter.js. Cette classe représente le modèle de mon application. Elle contient la logique métier pour gérer un compteur, avec des méthodes pour incrémenter et décrémenter sa valeur.
+
 ## Sujet/Observateur
 
 - Implémentation de l'interface `Observer` dans `observer.js` :
@@ -102,6 +106,8 @@
 
   export default Notifier;
   ```
+
+J'ai introduit le concept de Sujet/Observateur en implémentant une interface `Observer` dans `observer.js`. Ensuite, j'ai créé la classe `Notifier` dans `notifier.js`, qui gère une liste d'observateurs et les notifie lorsque des changements surviennent.
 
 ## Modèle / Vue / Contrôleur
 
@@ -142,6 +148,8 @@
   export default Controller;
   ```
 
+Le contrôleur est représenté par la classe `Controller` dans `controller.js`. Il interagit avec le modèle `Counter` pour effectuer des actions telles qu'incrémenter ou décrémenter le compteur. Il étend également la classe `Notifier` pour pouvoir notifier les observateurs lorsque des changements se produisent.
+
 ### Vue
 
 - Création de la classe `View` dans `view.js` :
@@ -179,6 +187,8 @@
   export default View;
   ```
 
+La vue est représentée par la classe `View` dans `view.js`. Elle est responsable de l'affichage des données à l'utilisateur. La vue observe les changements dans le modèle via le contrôleur et met à jour l'interface utilisateur en conséquence.
+
 ### Application
 
 - Modification de `application.js` pour créer un `Controller` et une `View` :
@@ -191,6 +201,8 @@
       new View(controller);
   });
   ```
+
+Enfin, dans `application.js`, j'assemble les pièces en créant une instance du contrôleur et de la vue lors du chargement du DOM. Cela démarre l'application et permet à l'utilisateur d'interagir avec le compteur via les boutons d'incrémentation et de décrémentation.
 
 ## Conclusion
 
