@@ -1,0 +1,107 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+.product-line {
+  display: flex;
+  align-items: center;
+  border-radius: 7px;
+  border: 2px solid black;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  padding: 10px 0;
+  margin: 10px 0;
+}
+
+.product-line:hover {
+  background-color: #ececec;
+}
+
+.product-name,
+.product-owner,
+.product-bid,
+.bid-button {
+  margin: 0 15px;
+  flex: 1;
+}
+
+.product-owner,
+.product-bid {
+  border-left: 1px solid black;
+  padding-left: 15px;
+}
+
+.bid-button {
+  border-radius: 7px;
+  background-color: #4caf50;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+.bid-button:hover {
+  background-color: red;
+}
+
+.confirmation-dialog {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  z-index: 1000;
+  display: none; /* Cacher par défaut */
+}
+
+/* Taille du texte pour petits écrans */
+@media (max-width: 600px) {
+  .product-name,
+  .product-owner,
+  .product-bid,
+  .bid-button {
+    font-size: 12px;
+  }
+}
+
+/* Taille du texte pour écrans moyens */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .product-name,
+  .product-owner,
+  .product-bid,
+  .bid-button {
+    font-size: 16px;
+  }
+}
+
+/* Taille du texte pour grands écrans */
+@media (min-width: 1025px) {
+  .product-name,
+  .product-owner,
+  .product-bid,
+  .bid-button {
+    font-size: 20px;
+  }
+}
+
+/* Taille du texte pour écrans en mode portrait */
+@media (orientation: portrait) {
+  .product-name,
+  .product-owner,
+  .product-bid,
+  .bid-button {
+    font-size: 14px;
+  }
+}
+
+/* Taille du texte pour écrans en mode paysage */
+@media (orientation: landscape) {
+  .product-name,
+  .product-owner,
+  .product-bid,
+  .bid-button {
+    font-size: 18px;
+  }
+}
