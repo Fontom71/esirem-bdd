@@ -6,10 +6,12 @@ import webserver.WebServer;
 import webserver.WebServerContext;
 
 public class App {
+    private static final int PORT = 8080;
     public static void main(String[] args) throws Exception {
         try {
             WebServer webServer = new WebServer();
-            webServer.listen(8080);
+            webServer.listen(PORT);
+            System.out.println("Server listening on port " + PORT);
 
             // Game routes
             webServer.getRouter().post("/create-game", GameController::createGame);
