@@ -11,6 +11,7 @@ import models.PlayerRole;
 import webserver.WebServerContext;
 
 public class CardController {
+    // Récupère toutes les cartes d'un jeu pour un joueur spécifique
     public static void getCards(WebServerContext context) {
         String gameId = context.getRequest().getParam("gameId");
         String playerId = context.getRequest().getParam("playerId");
@@ -53,6 +54,7 @@ public class CardController {
         }
     }
 
+    // Récupère une carte spécifique d'un jeu
     public static void getCard(WebServerContext context) {
         String gameId = context.getRequest().getParam("gameId");
         int row = Integer.parseInt(context.getRequest().getParam("row"));
@@ -71,6 +73,7 @@ public class CardController {
         }
     }
 
+    // Met à jour l'état d'une carte (révélée ou non)
     public static void updateCard(WebServerContext context) {
         String gameId = context.getRequest().getParam("gameId");
         int row = Integer.parseInt(context.getRequest().getParam("row"));

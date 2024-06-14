@@ -7,12 +7,13 @@ import models.Player;
 import webserver.WebServerContext;
 
 public class PlayerController {
+    // Récupère tous les joueurs d'un jeu
     public static void getPlayers(WebServerContext context) {
         String gameId = context.getRequest().getParam("gameId");
         try {
             ArrayList<Player> players = PlayerDAO.getInstance().getCode(gameId);
 
-            // Renvoie tout les joueurs en JSON
+            // Renvoie tous les joueurs en JSON
             StringBuilder playersJson = new StringBuilder("[");
             for (Player p : players) {
                 playersJson.append("{\"playerId\": \"").append(p.playerId()).append("\", \"username\": \"")
@@ -27,6 +28,7 @@ public class PlayerController {
         }
     }
 
+    // Récupère les informations d'un joueur spécifique
     public static void getPlayer(WebServerContext context) {
         String playerId = context.getRequest().getParam("playerId");
         try {
