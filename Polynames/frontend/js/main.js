@@ -7,7 +7,7 @@ import Storage from "./utils/storage.js";
 import PlayerService from "./services/player-service.js";
 import SSEService from "./services/sse-service.js";
 import { SSEClient } from "./libs/sse-client.js";
-import { SSE_URL } from "./constants.js";
+import { SSE_URL, MIN_SCREEN_WIDTH } from "./constants.js";
 import Role from "./utils/roles.js";
 import ClueService from "./services/clue-service.js";
 
@@ -72,6 +72,20 @@ class Main {
 
       ErrorView.init();
       Main.sseClient.connect();
+
+      // Vérifier la taille de l'écran
+      if (window.innerWidth < MIN_SCREEN_WIDTH) {
+        ErrorView.displayScreenSizeError();
+        return;
+      }
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth < MIN_SCREEN_WIDTH) {
+          ErrorView.displayScreenSizeError();
+        } else {
+          location.reload(); // Recharger la page si la taille est correcte
+        }
+      });
 
       if (Main.gameId.get()) this.started = true;
       this.started ? Main.onCreated() : PlayerView.showCreatePseudo();

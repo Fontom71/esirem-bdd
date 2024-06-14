@@ -1,24 +1,33 @@
+:root {
+  --bg-color: #2f75de4b;
+  --base-bg-color: #ecf0f1;
+}
+
 body {
   font-family: Arial, sans-serif;
   text-align: center;
-  background: linear-gradient(
-    to bottom right,
-    rgb(33, 77, 166) 0%,
-    rgb(33, 77, 166) 30%,
-    rgb(204, 199, 199) 40%,
-    rgb(204, 199, 199) 60%,
-    rgb(161, 39, 39) 70%,
-    rgb(161, 39, 39) 100%
-  );
+  background: linear-gradient(135deg, var(--bg-color) 25%, transparent 25%) -50px
+      0,
+    linear-gradient(225deg, var(--bg-color) 25%, transparent 25%) -50px 0,
+    linear-gradient(315deg, var(--bg-color) 25%, transparent 25%),
+    linear-gradient(45deg, var(--bg-color) 25%, transparent 25%);
+  background-size: 100px 100px;
+  background-color: var(--base-bg-color); /* Couleur de fond de base */
   background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Assure que le body occupe toute la hauteur de la fenêtre */
+  margin: 0; /* Supprime les marges par défaut */
 }
 
 app {
+  width: 100%;
+  max-width: 1200px; /* Limite la largeur maximale de l'app */
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 10%;
-  min-height: 100vh; /* Assure que l'app occupe au moins toute la hauteur de la fenêtre */
 }
 
 #titre {
@@ -34,27 +43,51 @@ app {
   margin-bottom: 20px;
 }
 
-#back,
-.menu-button {
-  position: absolute;
-  top: 10px;
-  font-size: 0.7em;
-  background-color: grey;
-  color: white;
-  width: 100px;
-}
-
-#back {
-  left: 10px;
-}
-
 .menu-button {
   right: 10px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  z-index: 10;
+  box-shadow: none;
 }
 
-#back:hover,
+.menu-button div {
+  width: 30px;
+  height: 3px;
+  background-color: #333;
+  border-radius: 5px;
+  transition: all 0.3s linear;
+  position: relative;
+  transform-origin: 1px;
+}
+
+.menu-button:hover div {
+  background-color: #1e4bb8;
+}
+
+.menu-button.active div:nth-child(1) {
+  transform: rotate(45deg);
+}
+
+.menu-button.active div:nth-child(2) {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.menu-button.active div:nth-child(3) {
+  transform: rotate(-45deg);
+}
+
 .menu-button:hover {
-  background-color: #474746;
+  background-color: transparent;
+  box-shadow: none;
 }
 
 #back:active,
@@ -136,23 +169,28 @@ app {
 }
 
 .score {
-  background-color: #f0f0f0;
-  border: 2px solid #ffa500;
-  padding: 0px 30px;
-  border-radius: 10px;
-  font-size: 24px;
-  font-weight: bold;
-  margin: 10px 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: row; /* Change de column à row */
+  justify-content: space-between;
+  align-items: center; /* Centrer verticalement */
+  background-color: #f0f0f0;
+  font-size: 1.5em;
+  border: 5px solid transparent;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.score-number {
+  margin-left: 5px;
 }
 
 /* Cards */
 .cards-container {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 5 colonnes de largeur égale */
-  gap: 20px; /* Espace entre les cartes */
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
   justify-content: center;
   margin: 20px 0;
   width: 100%;
@@ -199,12 +237,24 @@ app {
 
 /* Pseudo */
 .pseudo-container,
-.role-container,
-.join-container {
+.join-container,
+.role-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Aligne les éléments verticalement */
   justify-content: center;
   align-items: center;
+  width: 100%; /* Assure que le conteneur occupe toute la largeur */
+}
+
+.pseudo-container input,
+.pseudo-container button,
+.join-container input,
+.join-container button,
+.role-container select,
+.role-container button {
+  width: 100%; /* Assure que les éléments enfants occupent toute la largeur du conteneur */
+  max-width: 320px; /* Limite la largeur maximale des éléments */
+  box-sizing: border-box; /* Inclut le padding et la bordure dans la largeur totale */
 }
 
 .pseudo:focus,
@@ -216,18 +266,20 @@ app {
 button {
   font-size: 1.2em;
   border: none;
-  border-radius: 25px;
+  border-radius: 5px;
   padding: 15px 30px;
   background-color: #2563eb;
   color: #fff;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.2s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin: 10px;
 }
 
 button:hover {
   background-color: #1e4bb8;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
 
 button:active {
@@ -246,7 +298,6 @@ button:active {
 .indice-container .submit {
   font-size: 0.9em;
   border-radius: 5px;
-  color: #000;
   width: 150px;
   margin-bottom: 10px;
 }
@@ -265,28 +316,12 @@ button:active {
   width: 300px;
 }
 
-/* Footer */
-footer {
-  width: 100%;
-  color: white;
-  margin: 20px 0 0 0;
-  font-size: 0.8em;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 5px;
-  box-shadow: 2px 2px 5px rgba(255, 255, 255, 0.2);
-  background-color: rgba(255, 255, 255, 0.2);
-  padding: 10px;
-  text-align: center;
-}
-
-footer a {
-  font-size: 1.2em;
-  color: white;
-  text-decoration: none;
-}
-
-footer a:hover {
-  text-decoration: underline;
+.waiting-container {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Error notification */
@@ -321,7 +356,7 @@ footer a:hover {
   left: 0;
   width: 100%;
   height: 5px;
-  background-color: #ffc6c6;
+  background-color: #e74c3c; /* Couleur rouge pour la barre de progression */
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
   overflow: hidden;
@@ -330,11 +365,50 @@ footer a:hover {
 .progress {
   width: 100%;
   height: 100%;
-  background-color: #ff4757;
+  background-color: #ff4757; /* Couleur rouge pour la progression */
   transition: width 0.1s linear;
 }
 
 .error-notification.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* Success notification */
+.success-notification {
+  background-color: #2ecc71; /* Couleur verte pour le succès */
+  color: #f1f2f6;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  border-radius: 15px;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateY(-50px);
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  width: 50%;
+  height: auto;
+  z-index: 1000;
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.success-notification .progress-bar {
+  background-color: #27ae60; /* Couleur verte pour la barre de progression */
+}
+
+.success-notification .progress {
+  background-color: #2ecc71; /* Couleur verte pour la progression */
+}
+
+.success-notification.show {
   opacity: 1;
   transform: translate(-50%, 0);
 }
@@ -361,4 +435,48 @@ select:focus {
 input:hover,
 select:hover {
   border-color: #1e4bb8;
+}
+
+/* Bouton retour */
+.back-button {
+  font-size: 1em;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 10px;
+}
+
+.back-button:hover {
+  background-color: #1e4bb8;
+}
+
+.back-button:active {
+  transform: scale(0.98);
+}
+
+.screen-size-error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  background: linear-gradient(135deg, #ff4757, #ff6b81);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.screen-size-error h1 {
+  font-size: 3em;
+  margin-bottom: 20px;
+}
+
+.screen-size-error p {
+  font-size: 1.5em;
 }

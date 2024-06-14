@@ -26,6 +26,7 @@ class GameView {
 
     joinContainer.appendChild(code);
     joinContainer.appendChild(join);
+    joinContainer.appendChild(GameView.createBackButton()); // Ajoutez ceci
     app.appendChild(joinContainer);
 
     join.addEventListener("click", async () => {
@@ -106,27 +107,6 @@ class GameView {
     app.appendChild(indiceContainer);
   }
 
-  // Affiche le bouton de retour
-  static backPage() {
-    const app = document.querySelector("app");
-    const back = document.createElement("button");
-    back.id = "back";
-    back.innerText = "👈 Retour";
-    app.appendChild(back);
-
-    back.addEventListener("click", () => {
-      app.removeChild(back);
-      const views = ["role", "join"];
-      views.forEach((view) => {
-        const viewContainer = document.querySelector(`.${view}-container`);
-        if (viewContainer) {
-          GameView.deleteView(view);
-          PlayerView.showCreatePseudo();
-        }
-      });
-    });
-  }
-
   // Supprime une vue spécifique
   static deleteView(view) {
     const app = document.querySelector("app");
@@ -141,6 +121,17 @@ class GameView {
   static deleteAllViews() {
     const app = document.querySelector("app");
     app.innerHTML = "";
+  }
+
+  static createBackButton() {
+    const backButton = document.createElement("button");
+    backButton.classList.add("back-button");
+    backButton.innerText = "👈 Retour";
+    backButton.addEventListener("click", () => {
+      GameView.deleteAllViews();
+      PlayerView.showCreatePseudo();
+    });
+    return backButton;
   }
 }
 
