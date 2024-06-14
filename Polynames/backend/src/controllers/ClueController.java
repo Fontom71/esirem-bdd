@@ -98,7 +98,9 @@ public class ClueController {
             if (lastClue.isGuess() || lastClue.clueNum() + 1 < lastClue.found()) {
                 GameDao.getInstance().setPlayer(gameId, nextPlayer.playerId());
                 context.getSSE().emit("guess-" + gameId,
-                        "{\"type\": \"guess-made\", \"isGuess\": " + lastClue.isGuess() + ", \"died\" : \"true\"}");
+                        "{\"type\": \"guess-made\", \"gameId\": \"" + gameId + "\", \"round\": " + lastClue.round()
+                                + ", \"row\": " + guessRequest.row() + ", \"col\": " + guessRequest.col()
+                                + ", \"found\": " + lastClue.found() + "}");
                 return;
             }
 
@@ -115,29 +117,31 @@ public class ClueController {
 
             int found = lastClue.found();
             boolean isGuess = lastClue.isGuess();
+            boolean hasLost = false;
 
-            if (card.typeCard().equals(CardType.NEUTRAL)) {
-                isGuess = true;
-            } else if (card.typeCard().equals(CardType.BLUE)) {
+            if (card.typeCard().equals(CardType.BLUE)) {
                 found++;
                 isGuess = lastClue.clueNum() + 1 == found;
                 int newScore = (int) Math.pow(score, found);
                 GameDao.getInstance().updateScore(gameId, newScore);
-                CardDao.getInstance().update(gameId, guessRequest.row(), guessRequest.col(), true);
             } else if (card.typeCard().equals(CardType.BLACK)) {
-                isGuess = true;
-                found = 0;
+                hasLost = true;
                 GameDao.getInstance().updateScore(gameId, 0);
-                CardDao.getInstance().update(gameId, guessRequest.row(), guessRequest.col(), true);
+            } else if (card.typeCard().equals(CardType.NEUTRAL)) {
+                isGuess = true;
+                GameDao.getInstance().setPlayer(gameId, nextPlayer.playerId());
             }
 
+            CardDao.getInstance().update(gameId, guessRequest.row(), guessRequest.col(), true);
             ClueDao.getInstance().updateFound(gameId, lastClue.round(), found, isGuess);
 
-            context.getResponse().json("{\"gameId\": \"" + gameId + "\", \"round\": " + lastClue.round() + ", \"row\": "
-                    + guessRequest.row() + ", \"col\": " + guessRequest.col() + ", \"found\": " + found + "}");
-            context.getSSE().emit("guess-" + gameId, "{\"type\": \"guess-made\", \"round\": " + lastClue.round()
-                    + ", \"row\": " + guessRequest.row() + ", \"col\": " + guessRequest.col() + ", \"found\": " + found
-                    + ", \"color\": \"" + card.typeCard() + "\"}");
+            String guessResponse = "{\"type\": \"guess-made\", \"gameId\": \"" + gameId + "\", \"round\": "
+                    + lastClue.round() + ", \"row\": "
+                    + guessRequest.row() + ", \"col\": " + guessRequest.col() + ", \"found\": " + found
+                    + ", \"hasLost\": "
+                    + hasLost + ", \"isGuess\": " + isGuess + "}";
+            context.getResponse().json(guessResponse);
+            context.getSSE().emit("guess-" + gameId, guessResponse);
         } catch (Exception e) {
             context.getResponse().serverError(e.getMessage());
         }

@@ -108,8 +108,8 @@ class SSEService {
   static async guess(data) {
     data = JSON.parse(data);
     if (data.type === "guess-made") {
-      if (data.isGuess) {
-        if (data.found === 0) {
+      if (data.isGuess === "false") {
+        if (data.hasLost === true) {
           GameView.deleteAllViews();
           ErrorView.displayError("Vous avez perdu !");
           Main.gameId.remove();
@@ -121,6 +121,7 @@ class SSEService {
           Main.executePlayerAction(Main.playerId.get());
         }
       } else {
+        console.log(data);
         const card = document.querySelector(
           `.card[data-row="${data.row}"][data-col="${data.col}"]`
         );

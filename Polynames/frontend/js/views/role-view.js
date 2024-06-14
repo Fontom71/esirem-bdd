@@ -33,6 +33,7 @@ class RoleView {
     roleContainer.appendChild(select);
     roleContainer.appendChild(submit);
     roleContainer.appendChild(random);
+    roleContainer.appendChild(GameView.createBackButton()); // Ajoutez ceci
     app.appendChild(roleContainer);
 
     // Fonction pour gérer la sélection du rôle

@@ -5,6 +5,7 @@ import Role from "../utils/roles.js";
 import ErrorView from "./error-view.js";
 import GameView from "./game-view.js";
 import RoleView from "./role-view.js";
+import SuccessView from "./success-view.js";
 
 class PlayerView {
   // Affiche les informations de l'utilisateur
@@ -22,7 +23,10 @@ class PlayerView {
 
     const menuButton = document.createElement("button");
     menuButton.classList.add("menu-button");
-    menuButton.innerHTML = "&#9776;";
+    for (let i = 0; i < 3; i++) {
+      const bar = document.createElement("div");
+      menuButton.appendChild(bar);
+    }
 
     const menuItems = document.createElement("div");
     menuItems.classList.add("menu-items");
@@ -59,6 +63,7 @@ class PlayerView {
     // Afficher ou cacher le menu
     menuButton.addEventListener("click", (event) => {
       event.stopPropagation();
+      menuButton.classList.toggle("active");
       const toggle = menuItems.style.display === "block" ? "none" : "block";
       menuItems.style.display = toggle;
     });
@@ -70,14 +75,15 @@ class PlayerView {
         !menuButton.contains(event.target)
       ) {
         menuItems.style.display = "none";
+        menuButton.classList.remove("active"); // Ajoutez cette ligne
       }
     });
 
     codeElement.addEventListener("click", () => {
       const code = codeElement.querySelector("span");
       navigator.clipboard.writeText(code.innerText);
-      // Affiche un message de confirmation
-      alert("Code copié dans le presse-papier");
+      // Affiche une notification de succès
+      SuccessView.displaySuccess("Code copié dans le presse-papier");
     });
 
     logout.addEventListener("click", () => {
@@ -122,7 +128,6 @@ class PlayerView {
         Main.username.set(enteredPseudo.toString());
         GameView.deleteView("pseudo");
         GameView.createJoinContainer();
-        GameView.backPage();
       } else {
         // Logique d'erreur
         ErrorView.displayError("Veuillez entrer un pseudo");
@@ -137,7 +142,6 @@ class PlayerView {
         Main.username.set(enteredPseudo.toString());
         GameView.deleteView("pseudo");
         RoleView.choosePlayerRole();
-        GameView.backPage();
       } else {
         // Logique d'erreur
         ErrorView.displayError("Veuillez entrer un pseudo");
@@ -169,7 +173,7 @@ class PlayerView {
     // Créer l'élément du score
     const scoreElement = document.createElement("div");
     scoreElement.classList.add("score");
-    scoreElement.innerText = "Score: ";
+    scoreElement.innerText = "Score :";
 
     // Ajouter le numéro du score
     const score = await GameService.getScore(Main.gameId.get());

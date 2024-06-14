@@ -1,3 +1,5 @@
+import { MIN_SCREEN_WIDTH } from "../constants.js";
+
 class ErrorView {
   static boxDialog = document.getElementById("box-dialog");
   static errorCount = 0;
@@ -59,6 +61,17 @@ class ErrorView {
         this.errorCount--;
       }, 500); // Donne le temps à l'animation de disparition
     }, 5000); // 5 secondes
+  }
+
+  // Affiche une erreur de taille d'écran
+  static displayScreenSizeError() {
+    const app = document.querySelector("app");
+    app.innerHTML = `
+      <div class="screen-size-error">
+        <h1>Erreur de taille d'écran</h1>
+        <p>La taille de l'écran doit être supérieure à ${MIN_SCREEN_WIDTH}px.</p>
+      </div>
+    `;
   }
 }
 
